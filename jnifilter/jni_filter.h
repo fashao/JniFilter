@@ -37,7 +37,7 @@ public:
     return orig_jni_functions_table_;
   }
 
-  const JNINativeInterface& get_filter() const {
+  JNINativeInterface& get_filter() {
     return jni_functions_filter_;
   }
 
@@ -49,5 +49,11 @@ private:
   // filters
   JNINativeInterface jni_functions_filter_;
 };
+
+#define _JNI_FILTER_HOOK_ENTRY(_func, _replace) \
+  JniFilter::GetInstance().get_filter()._func = _replace
+
+#define _JNI_FILTER_CALL_ORIG(_func) \
+  JniFilter::GetInstance().get_orig_table()->_func
 
 #endif // JNI_FILTER_H_
