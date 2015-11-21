@@ -13,7 +13,7 @@ jint hook_RegisterNatives(JNIEnv* env,
                           const JNINativeMethod* methods,
                           jint numMethods) {
   for (size_t i = 0; i < numMethods; ++i) {
-    LOGD("register native function: %s %s %p", methods[i].name, methods[i].signature, methods[i].fnPtr);
+    LOGD("register native func: %s%s, %p", methods[i].name, methods[i].signature, methods[i].fnPtr);
     // TODO: Replace methods[i].fnPtr to hook native.
   }
   return _JNI_FILTER_CALL_ORIG(RegisterNatives)(env, clazz, methods, numMethods);
@@ -24,6 +24,22 @@ jclass hook_FindClass(JNIEnv* env,
 
   LOGD("findClass: %s\n", name);
   return _JNI_FILTER_CALL_ORIG(FindClass)(env, name);
+}
+
+jmethodID hook_GetMethodID(JNIEnv* env,
+                           jclass clazz,
+                           const char* name,
+                           const char* sig) {
+  LOGD("GetMethodID: %s%s\n", name, sig);
+  return _JNI_FILTER_CALL_ORIG(GetMethodID)(env, clazz, name, sig);
+}
+
+jmethodID hook_GetStaticMethodID(JNIEnv* env,
+                                 jclass clazz,
+                                 const char* name,
+                                 const char* sig) {
+  LOGD("GetStaticMethodID: %s%s\n", name, sig);
+  return _JNI_FILTER_CALL_ORIG(GetStaticMethodID)(env, clazz, name, sig);
 }
 
 extern "C"
@@ -40,6 +56,8 @@ jint JNI_OnLoad(JavaVM* vm,
 
   _JNI_FILTER_HOOK_ENTRY(RegisterNatives, hook_RegisterNatives);
   _JNI_FILTER_HOOK_ENTRY(FindClass, hook_FindClass);
+  _JNI_FILTER_HOOK_ENTRY(GetMethodID, hook_GetMethodID);
+  _JNI_FILTER_HOOK_ENTRY(GetStaticMethodID, hook_GetStaticMethodID);
 
   JniFilter::GetInstance().enable();
 
