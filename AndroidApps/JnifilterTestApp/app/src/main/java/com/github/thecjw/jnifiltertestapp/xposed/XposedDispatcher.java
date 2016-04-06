@@ -22,7 +22,8 @@ import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 public class XposedDispatcher implements IXposedHookLoadPackage {
 
   private static final String TAG = XposedDispatcher.class.getSimpleName();
-  private static final String nativeLibraryName = "libjnifilter_test.so";
+  private static final String nativeLibraryName1 = "libjnifilter_test.so";
+  private static final String nativeLibraryName2 = "libcrystax.so";
   private static final String libjiaguEntryClassName = "com.qihoo.util.StubApplication";
 
   private static void copyFile(File src, File dst) throws IOException {
@@ -38,11 +39,16 @@ public class XposedDispatcher implements IXposedHookLoadPackage {
 
   private void loadJniFilterTestLib(Context context) {
     try {
-      String libPath = context.getFilesDir().getAbsolutePath() + "/" + nativeLibraryName;
+      String libPath1 = context.getFilesDir().getAbsolutePath() + "/" + nativeLibraryName1;
+      String libPath2 = context.getFilesDir().getAbsolutePath() + "/" + nativeLibraryName2;
       // Visual Studio will push so file to tmp folder after build.
-      String sourcePath = "/data/local/tmp/" + nativeLibraryName;
-      copyFile(new File(sourcePath), new File(libPath));
-      System.load(libPath);
+      String sourcePath1 = "/data/local/tmp/" + nativeLibraryName1;
+      String sourcePath2 = "/data/local/tmp/" + nativeLibraryName2;
+      copyFile(new File(sourcePath1), new File(libPath1));
+      copyFile(new File(sourcePath2), new File(libPath2));
+
+      System.load(libPath2);
+      System.load(libPath1);
     } catch (Exception e) {
       Log.d(TAG, e.getMessage());
     }

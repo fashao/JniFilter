@@ -23,6 +23,7 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>Clang_3_6</PlatformToolset>
+    <ThumbMode>Thumb</ThumbMode>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -43,14 +44,18 @@
       <CppLanguageStandard>c++11</CppLanguageStandard>
       <AdditionalIncludeDirectories>$(SolutionDir)jnifilter\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>Enabled</ExceptionHandling>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>$(VS_NdkRoot)\sources\crystax\libs\$(TargetArchAbi)\;$(SolutionDir)$(Platform)\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
-      <LibraryDependencies>jnifilter;%(LibraryDependencies)</LibraryDependencies>
+      <LibraryDependencies>jnifilter;crystax;%(LibraryDependencies)</LibraryDependencies>
+      <DebuggerSymbolInformation>OmitAllSymbolInformation</DebuggerSymbolInformation>
     </Link>
     <PostBuildEvent>
-      <Command>$(VS_AndroidHome)\platform-tools\adb.exe push $(OutputPath)$(TargetFileName) /data/local/tmp/</Command>
+      <Command>$(VS_AndroidHome)\platform-tools\adb.exe push $(OutputPath)$(TargetFileName) /data/local/tmp/
+$(VS_AndroidHome)\platform-tools\adb.exe push $(VS_NdkRoot)\sources\crystax\libs\$(TargetArchAbi)\libcrystax.so /data/local/tmp/</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'">
